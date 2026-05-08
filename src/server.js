@@ -1,14 +1,18 @@
-require('dotenv').config(); 
-const express = require('express'); 
+require('dotenv').config();
+const express = require('express');
+const connectDB = require('./config/db'); 
 
-const app = express(); 
+const app = express();
+
+connectDB();
+
+app.use(express.json());
 
 app.get('/', (req, res) => {
-  res.send('🚀 Server Backend Mạng xã hội UTE cho Dev đang chạy thành công!');
+  res.send('API Mạng xã hội đang chạy trên Database Online!');
 });
 
 const PORT = process.env.PORT || 5000;
-
 app.listen(PORT, () => {
-  console.log(`Server đang chạy trên cổng ${PORT}`);
+  console.log(`🚀 Server đang chạy tại: http://localhost:${PORT}`);
 });
