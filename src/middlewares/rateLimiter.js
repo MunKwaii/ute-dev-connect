@@ -27,7 +27,24 @@ const resetPasswordLimiter = rateLimit({
     }
 });
 
+//Okarin's part
+
+const loginLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000, // 15 phút
+    max: 6, // Tối đa 6 lần thử
+    standardHeaders: true,
+    legacyHeaders: false,
+    handler: (req, res) => {
+        return res.status(429).json({
+            success: false,
+            message: 'Bạn đã thử đăng nhập sai quá nhiều lần. Vui lòng thử lại sau 15 phút.'
+        });
+    }
+});
+
+// Nhớ export thêm loginLimiter
 module.exports = {
     forgotPasswordLimiter,
-    resetPasswordLimiter
+    resetPasswordLimiter,
+    loginLimiter
 };

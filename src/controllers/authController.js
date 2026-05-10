@@ -1,10 +1,10 @@
 const authService = require('../services/authService');
+const jwt = require('jsonwebtoken');
 
 const forgotPassword = async (req, res) => {
     try {
         const { email } = req.body;
         await authService.handleForgotPassword(email);
-
 
         return res.status(200).json({
             success: true,
@@ -36,7 +36,40 @@ const resetPassword = async (req, res) => {
     }
 };
 
+const login = async (req, res) => {
+    try {
+        const { email, password } = req.body;
+        
+        // Gọi service xử lý logic
+        const user = await authService.handleLogin(email, password);
+
+        // Tạo JWT Token
+        const token = jwt.sign(
+            { id: user._id, role: user.role },
+            process.env.JWT_SECRET || 'ute_social_network_secret', // Nên thêm JWT_SECRET vào file .env
+            { expiresIn: '1h' }
+        );
+
+        const redirectUrl = user.role === 'admin' ? '/api/admin/profile' : '/api/user/profile';
+
+        return res.status(200).json({
+            success: true,
+            message: 'Đăng nhập thành công',
+            token,
+            role: user.role,
+            redirectUrl
+        });
+    } catch (error) {
+        return res.status(401).json({
+            success: false,
+            message: error.message
+        });
+    }
+};
+
+// Export tất cả các hàm
 module.exports = {
     forgotPassword,
-    resetPassword
+    resetPassword,
+    login
 };
