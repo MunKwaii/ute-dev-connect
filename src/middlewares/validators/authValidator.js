@@ -24,7 +24,17 @@ const validateResetPassword = [
     validateRequest
 ];
 
+
+//Okarin's part
+const validateLogin = [
+    body('email').isEmail().withMessage('Vui lòng cung cấp một email hợp lệ.'),
+    body('password').notEmpty().withMessage('Mật khẩu không được để trống.'),
+    validateRequest // Tái sử dụng middleware bắt lỗi của nhóm
+];
+
+// Export thêm validateLogin
 module.exports = {
     validateForgotPassword,
-    validateResetPassword
+    validateResetPassword,
+    validateLogin
 };

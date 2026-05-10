@@ -64,4 +64,17 @@ const handleResetPassword = async (email, otp, newPassword) => {
   await redisClient.del(`pwdResetOTP:${email}`);
 };
 
-module.exports = { handleForgotPassword, handleResetPassword };
+//Okarin's part
+
+const handleLogin = async (email, password) => {
+    // Tìm user theo email
+    const user = await User.findOne({ email });
+    if (!user) throw new Error('Sai email hoặc mật khẩu!');
+
+    // So sánh mật khẩu
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) throw new Error('Sai email hoặc mật khẩu!');
+
+    return user; // Trả về thông tin user
+};
+module.exports = { handleForgotPassword, handleResetPassword, handleLogin };
