@@ -72,16 +72,18 @@ const handleResetPassword = async (email, otp, newPassword) => {
   const isMatch = await bcrypt.compare(otp, storedHashedOtp);
   if (!isMatch) throw new Error('Mã OTP không chính xác!');
 
-  // Nếu đúng OTP, tiến hành cập nhật mật khẩu
-  const user = await User.findOne({ email });
-  if (!user) throw new Error('Người dùng không tồn tại!');
-
   // Hash mật khẩu mới
   const salt = await bcrypt.genSalt(10);
-  user.password = await bcrypt.hash(newPassword, salt);
+  const hashedPassword = await bcrypt.hash(newPassword, salt);
   
-  // Lưu thay đổi vào DB
-  await user.save();
+  // Lưu thay đổi vào DB bằng updateOne để chỉ cập nhật trường password 
+  // (tránh lỗi mongoose validation do thiếu các trường required khác trên DB cũ như studentId)
+  const result = await User.updateOne(
+    { email }, 
+    { $set: { password: hashedPassword } }
+  );
+
+  if (result.matchedCount === 0) throw new Error('Người dùng không tồn tại!');
 
   // Xóa mã OTP khỏi Redis sau khi đã đổi mật khẩu thành công (Tránh tái sử dụng)
   await redisClient.del(`pwdResetOTP:${email}`);
