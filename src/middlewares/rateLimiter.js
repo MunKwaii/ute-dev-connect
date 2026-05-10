@@ -1,0 +1,33 @@
+const rateLimit = require('express-rate-limit');
+
+// Giới hạn request cho API Forgot Password (Ví dụ: 3 lần/15 phút)
+const forgotPasswordLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000, // 15 phút
+    max: 3, // Giới hạn 3 request mỗi windowMs
+    standardHeaders: true, // Trả về thông tin Rate limit ở header (RateLimit-*)
+    legacyHeaders: false, // Vô hiệu hóa `X-RateLimit-*` headers
+    handler: (req, res) => {
+        // Trả về định dạng JSON tùy chỉnh khi vượt quá giới hạn
+        return res.status(429).json({
+            message: 'Bạn đã yêu cầu gửi mã OTP quá nhiều lần. Vui lòng thử lại sau 15 phút.'
+        });
+    }
+});
+
+// Giới hạn request cho API Reset Password (Ví dụ: 5 lần/15 phút)
+const resetPasswordLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000, // 15 phút
+    max: 5, // Giới hạn 5 request mỗi windowMs
+    standardHeaders: true,
+    legacyHeaders: false,
+    handler: (req, res) => {
+        return res.status(429).json({
+            message: 'Bạn đã nhập sai mã OTP hoặc yêu cầu đặt lại mật khẩu quá nhiều lần. Vui lòng thử lại sau 15 phút.'
+        });
+    }
+});
+
+module.exports = {
+    forgotPasswordLimiter,
+    resetPasswordLimiter
+};
