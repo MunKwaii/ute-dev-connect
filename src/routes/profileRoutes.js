@@ -1,11 +1,10 @@
 const express = require('express');
 const router = express.Router();
-const express = require('express');
-const router = express.Router();
+
 // 1. Import middlewares
-// Chú ý: Đã đổi cách import authMiddleware để tương thích với bản cập nhật mới nhất
 const { verifyToken, authorizeRole } = require('../middlewares/authMiddleware');
 const { validateEditProfile } = require('../middlewares/validators/profileValidator');
+const { profileLimiter } = require('../middlewares/rateLimiter');
 
 // 2. Import controller
 const profileController = require('../controllers/profileController');
@@ -18,7 +17,7 @@ const profileController = require('../controllers/profileController');
 // @desc    Tạo mới hoặc cập nhật thông tin hồ sơ (Edit Profile)
 // @access  Private
 // FIX LỖI: Đổi `authMiddleware` thành `verifyToken`
-router.put('/', verifyToken, validateEditProfile, profileController.editProfile);
+router.put('/profile', verifyToken, profileLimiter, validateEditProfile, profileController.editProfile);
 
 
 // ==========================================
