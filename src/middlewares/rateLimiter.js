@@ -42,9 +42,23 @@ const loginLimiter = rateLimit({
     }
 });
 
-// Nhớ export thêm loginLimiter
+// Giới hạn cho API Cập nhật Profile
+const profileLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000, // 15 phút
+    max: 20, // Cho phép cập nhật profile 20 lần / 15 phút để chống spam request
+    standardHeaders: true,
+    legacyHeaders: false,
+    handler: (req, res) => {
+        return res.status(429).json({
+            success: false,
+            message: 'Bạn cập nhật Profile quá nhanh. Vui lòng đợi một lát.'
+        });
+    }
+});
+
 module.exports = {
     forgotPasswordLimiter,
     resetPasswordLimiter,
-    loginLimiter
+    loginLimiter,
+    profileLimiter
 };
