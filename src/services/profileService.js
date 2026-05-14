@@ -31,6 +31,21 @@ const updateUserProfile = async (userId, profileFields) => {
     }
 };
 
+/**
+ * Lấy hồ sơ người dùng theo ID
+ * @param {String} userId - ID của người dùng
+ * @returns {Object} - Hồ sơ người dùng
+ */
+const getProfileByUserId = async (userId) => {
+    try {
+        const profile = await Profile.findOne({ user: userId }).populate('user', ['name', 'avatar']);
+        return profile;
+    } catch (error) {
+        throw error;
+    }
+};
+
 module.exports = {
-    updateUserProfile
+    updateUserProfile,
+    getProfileByUserId
 };

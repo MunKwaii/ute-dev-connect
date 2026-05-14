@@ -19,6 +19,11 @@ const profileController = require('../controllers/profileController');
 // FIX LỖI: Đổi `authMiddleware` thành `verifyToken`
 router.put('/profile', verifyToken, profileLimiter, validateEditProfile, profileController.editProfile);
 
+// @route   GET /api/profile/me
+// @desc    Lấy hồ sơ của người dùng hiện tại
+// @access  Private
+router.get('/profile/me', verifyToken, profileController.getCurrentProfile);
+
 
 // ==========================================
 // CÁC ROUTE PHÂN QUYỀN (Từ nhánh feature/login của bạn)

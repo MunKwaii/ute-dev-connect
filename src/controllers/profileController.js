@@ -55,6 +55,31 @@ const editProfile = async (req, res) => {
     }
 };
 
+/**
+ * Controller: Lấy hồ sơ của người dùng hiện tại
+ * @param {Object} req - Request object
+ * @param {Object} res - Response object
+ */
+const getCurrentProfile = async (req, res) => {
+    try {
+        const userId = req.user.id;
+        console.log(`[getCurrentProfile] Bắt đầu lấy profile cho user: ${userId}`);
+        const profile = await profileService.getProfileByUserId(userId);
+
+        if (!profile) {
+            console.log(`[getCurrentProfile] Không tìm thấy profile cho user: ${userId}`);
+            return res.status(404).json({ msg: 'Không tìm thấy hồ sơ cho người dùng này' });
+        }
+
+        console.log(`[getCurrentProfile] Đã tìm thấy profile, trả về data.`);
+        return res.status(200).json(profile);
+    } catch (error) {
+        console.error('Lỗi ở getCurrentProfile controller:', error.message);
+        return res.status(500).json({ msg: 'Lỗi máy chủ (Server Error)' });
+    }
+};
+
 module.exports = {
-    editProfile
+    editProfile,
+    getCurrentProfile
 };
