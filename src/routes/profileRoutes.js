@@ -24,6 +24,15 @@ router.put('/profile', verifyToken, profileLimiter, validateEditProfile, profile
 // @access  Private
 router.get('/profile/me', verifyToken, profileController.getCurrentProfile);
 
+// @route   GET /api/profile
+// @desc    Lấy tất cả hồ sơ người dùng
+// @access  Public
+router.get('/profile', profileController.getAllProfiles);
+
+// @route   GET /api/profile/user/:user_id
+// @desc    Lấy hồ sơ người dùng theo user ID
+// @access  Public
+router.get('/profile/user/:user_id', profileController.getProfileById);
 
 // ==========================================
 // CÁC ROUTE PHÂN QUYỀN (Từ nhánh feature/login của bạn)

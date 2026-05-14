@@ -79,7 +79,47 @@ const getCurrentProfile = async (req, res) => {
     }
 };
 
+/**
+ * Controller: Lấy tất cả hồ sơ người dùng
+ * @param {Object} req - Request object
+ * @param {Object} res - Response object
+ */
+const getAllProfiles = async (req, res) => {
+    try {
+        const profiles = await profileService.getAllProfiles();
+        return res.status(200).json(profiles);
+    } catch (error) {
+        console.error('Lỗi ở getAllProfiles controller:', error.message);
+        return res.status(500).json({ msg: 'Lỗi máy chủ (Server Error)' });
+    }
+};
+
+/**
+ * Controller: Lấy hồ sơ người dùng theo ID
+ * @param {Object} req - Request object
+ * @param {Object} res - Response object
+ */
+const getProfileById = async (req, res) => {
+    try {
+        const profile = await profileService.getProfileByUserId(req.params.user_id);
+
+        if (!profile) {
+            return res.status(404).json({ msg: 'Không tìm thấy hồ sơ cho người dùng này' });
+        }
+
+        return res.status(200).json(profile);
+    } catch (error) {
+        console.error('Lỗi ở getProfileById controller:', error.message);
+        if (error.kind === 'ObjectId') {
+            return res.status(404).json({ msg: 'Không tìm thấy hồ sơ cho người dùng này' });
+        }
+        return res.status(500).json({ msg: 'Lỗi máy chủ (Server Error)' });
+    }
+};
+
 module.exports = {
     editProfile,
-    getCurrentProfile
+    getCurrentProfile,
+    getAllProfiles,
+    getProfileById
 };
