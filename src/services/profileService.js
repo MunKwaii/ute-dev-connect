@@ -45,7 +45,21 @@ const getProfileByUserId = async (userId) => {
     }
 };
 
+/**
+ * Lấy tất cả hồ sơ người dùng
+ * @returns {Array} - Danh sách tất cả hồ sơ
+ */
+const getAllProfiles = async () => {
+    try {
+        const profiles = await Profile.find().populate('user', ['name', 'avatar']);
+        return profiles;
+    } catch (error) {
+        throw error;
+    }
+};
+
 module.exports = {
     updateUserProfile,
-    getProfileByUserId
+    getProfileByUserId,
+    getAllProfiles
 };
