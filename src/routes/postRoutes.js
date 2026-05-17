@@ -8,6 +8,11 @@ const { verifyToken } = require('../middlewares/authMiddleware');
 // Import controller
 const postController = require('../controllers/postController');
 
+// @route   GET /api/posts
+// @desc    Lấy tất cả bài viết mới nhất
+// @access  Public
+router.get('/', postController.getAllPosts);
+
 // @route   POST /api/posts
 // @desc    Tạo bài viết mới
 // @access  Private

@@ -41,7 +41,18 @@ const getPostById = async (postId) => {
   }
 };
 
+const getAllPosts = async () => {
+  try {
+    // Lấy toàn bộ bài viết, sắp xếp theo ngày mới nhất (tham khảo devconnector)
+    const posts = await Post.find().sort({ date: -1 });
+    return posts;
+  } catch (error) {
+    throw error;
+  }
+};
+
 module.exports = {
   createPost,
-  getPostById
+  getPostById,
+  getAllPosts
 };
